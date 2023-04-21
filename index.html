@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./prism.css">
+
+    <style>
+        body {
+            display: flex;
+            gap: 12px;
+        }
+
+        .editor-container {
+            width: 480px;
+            height: 500px;
+            position: relative;
+        }
+
+        #preview {
+            width: 480px;
+            height: 500px;
+            border: 1px solid black;
+        }
+
+        #editor {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            font-size: 20px;
+        }
+
+
+        
+
+        .ace_content {
+            height: 100% !important;
+        }
+
+        .toolbar {
+            opacity: 1 !important;
+        }
+
+        .toolbar .toolbar-item span,
+        .toolbar .toolbar-item span:hover {
+            color: #ffffff66 !important;
+        }
+
+        .toolbar .toolbar-item span {
+            background-color: transparent !important;
+            box-shadow: none !important;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h2>Editor</h2>
+        <div class="editor-container">
+            <div id="editor"></div>
+        </div>  
+    </div>  
+
+    <div>
+        <h2>Preview</h2>
+        <div id="preview"></div>
+    </div>
+        
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.5.3/ace.js"></script>
+    <script src="./prism.js"></script>
+    <script>
+        let editor = ace.edit(document.getElementById('editor'))
+        editor.setTheme("ace/theme/twilight")
+
+        editor.session.setMode("ace/mode/html")
+        editor.session.setMode("ace/mode/php")
+
+        editor.setShowPrintMargin(false);
+        editor.renderer.setShowGutter(false);
+        editor.renderer.setPadding(15);
+
+        let preview = document.getElementById('preview')
+        let converter = new showdown.Converter()
+
+        editor.on('input', () => {
+            html = converter.makeHtml(editor.getValue())
+            preview.innerHTML = html
+            Prism.highlightAll();
+        })
+
+        Prism.plugins.toolbar.registerButton('language-name', function(env) {
+            var span = document.createElement('span')
+            span.innerHTML = env.language
+
+            return span
+        });
+    </script>
+</body>
+</html>
